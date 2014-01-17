@@ -20,7 +20,7 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-    <LinearLayout
+    <FrameLayout
         android:id="@+id/navbar_container"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -28,14 +28,14 @@
 
         <com.viewpagerindicator.TabPageIndicator
             android:id="@+id/indicator"
-            android:layout_width="0dp"
-            android:layout_weight="1.0"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content" />
 
         <ImageView
             android:id="@+id/indicator_shade"
             android:layout_width="wrap_content"
             android:visibility="gone"
+            android:layout_gravity="right"
             android:src="@drawable/ic_base_navbar_indicator_right_nor"
             android:layout_height="wrap_content" />
 
@@ -43,9 +43,10 @@
             android:id="@+id/indicator_add"
             android:layout_width="wrap_content"
             android:visibility="gone"
+            android:layout_gravity="right"
             android:src="@drawable/ic_base_navbar_indicator_edit_nor"
             android:layout_height="wrap_content" />
-    </LinearLayout>
+    </FrameLayout>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/pager"

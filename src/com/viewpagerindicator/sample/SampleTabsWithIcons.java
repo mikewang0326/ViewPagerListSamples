@@ -1,7 +1,6 @@
 package com.viewpagerindicator.sample;
 
 import android.content.Context;
-import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -9,18 +8,16 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
 import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.View.OnDragListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup.OnHierarchyChangeListener;
+import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.viewpagerindicator.IconPagerAdapter;
@@ -47,11 +44,11 @@ public class SampleTabsWithIcons extends FragmentActivity implements OnClickList
     };
     
 	private ImageView mShadeIndicator;
-	private ImageView mAddIndicator;
+	private ImageView mEditIndicator;
+	private TabPageIndicator mIndicator;
 
 	private FragmentPagerAdapter mPagerAdapter;
 
-	private TabPageIndicator mIndicator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +72,7 @@ public class SampleTabsWithIcons extends FragmentActivity implements OnClickList
         mIndicator.setOnTouchListener(this);
         
         mShadeIndicator = (ImageView) findViewById(R.id.indicator_shade);
-        mAddIndicator = (ImageView) findViewById(R.id.indicator_add);
+        mEditIndicator = (ImageView) findViewById(R.id.indicator_add);
     }
 
     class GoogleMusicAdapter extends FragmentPagerAdapter implements IconPagerAdapter {
@@ -131,15 +128,36 @@ public class SampleTabsWithIcons extends FragmentActivity implements OnClickList
 	@Override
 	public void onPageSelected(int position) {
 		Log.d(TAG_INDICATOR_LISTENER, "onPageSelected() position = " + position);
-		updateIndicatorShadeonPageSelected(position);
+		updateShadeIndicator(isInvisibleChildInTheRightAfterSelect(position));
 	}
-
-	@SuppressWarnings("deprecation")
-	private void updateIndicatorShadeByTouchEvent() {
+	
+	private void updateShadeIndicator(boolean  isExistChildInRight) {
+		Log.d("tt", "updateIndicatorShade() isExistChildInRight = " + isExistChildInRight);
+		if (isExistChildInRight) {
+			mShadeIndicator.setVisibility(View.VISIBLE);
+			getContainer().setPadding(0, 0, 100, 0);
+		} else {
+			mShadeIndicator.setVisibility(View.GONE);
+			getContainer().setPadding(0, 0, 0, 0);
+		}
+	}
+	
+	private void updateEditIndicator (boolean isExistEditChild) {
+		Log.d("tt", "updateIndicatorShade() isExistChildInRight = " + isExistEditChild);
+		if (isExistEditChild) {
+			mEditIndicator.setVisibility(View.VISIBLE);
+			getContainer().setPadding(0, 0, 100, 0);
+		} else {
+			mEditIndicator.setVisibility(View.GONE);
+			getContainer().setPadding(0, 0, 0, 0);
+		}
+	}
+	
+	
+	public boolean isInvisibleChildInTheRightAfterTouch() {
+		boolean ret = false;
 		IcsLinearLayout container = (IcsLinearLayout) mIndicator.getContainer();
-		
 		int childCount = container.getChildCount();
-		
 		TabView lastChildView = (TabView) container.getChildAt(childCount - 1);
 		
 		Log.d(TAG_INDICATOR_LISTENER, "updateIndicatorShade() lastChildView.getMeasuredWidth() = " + lastChildView.getMeasuredWidth());
@@ -155,22 +173,17 @@ public class SampleTabsWithIcons extends FragmentActivity implements OnClickList
 		int screenWidth = mWindowManager.getDefaultDisplay().getWidth();
 		Log.d(TAG_INDICATOR_LISTENER, "updateIndicatorShade() lastChildView screenWidth= " + screenWidth);
 		
-		if (locationInScreen[0] < screenWidth) {
-			Log.d(TAG_INDICATOR_LISTENER, "updateIndicatorShade() lastChildView is visible position = " + (childCount - 1));
-		} else {
-			Log.d(TAG_INDICATOR_LISTENER, "updateIndicatorShade() lastChildView is invisible position = " + (childCount - 1));
-		}
-	}
-	
-	private void updateIndicatorShadeonPageSelected(int position) {
+		if (locationInScreen[0] > screenWidth) {
+			ret = true;
+		}  
 		
-		boolean invisibleChildInTheRight = isInvisibleChildInTheRight(position);
-		Log.d("tt", "invisibleChildInTheRight = " + invisibleChildInTheRight);
+		Log.d(TAG_INDICATOR_LISTENER, "isInvisibleChildInTheRightAfterTouch ret = " + ret);
 		
+		return ret;
 	}
 	
 	
-	public boolean isInvisibleChildInTheRight(int position) {
+	public boolean isInvisibleChildInTheRightAfterSelect(int position) {
 		boolean ret = false;
 		/*
 		 *  select child's three state
@@ -241,7 +254,6 @@ public class SampleTabsWithIcons extends FragmentActivity implements OnClickList
 		return ret;
 	}
 	
-	
 	public boolean canScollToMiddle(int selectPos) {
 		return canScrollToLeft(selectPos) && canScrollToLeft(selectPos);
 	}
@@ -288,7 +300,7 @@ public class SampleTabsWithIcons extends FragmentActivity implements OnClickList
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
 		Log.d(TAG_INDICATOR_LISTENER, "onTouch()");
-		updateIndicatorShadeByTouchEvent();
+		updateShadeIndicator(isInvisibleChildInTheRightAfterTouch());
 		return false;
 	}
 	
