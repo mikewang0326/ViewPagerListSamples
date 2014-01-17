@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/combo_tab_indicator_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+    <com.viewpagerindicator.TabPageIndicator
+        android:id="@+id/indicator"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
+
+    <ImageView
+        android:id="@+id/indicator_shade"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:src="@drawable/ic_base_navbar_indicator_right_nor"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/indicator_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:src="@drawable/ic_base_navbar_indicator_edit_nor"
+        android:visibility="gone" />
+
+</FrameLayout>
